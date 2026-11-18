@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "brixgate"
+version = "0.0.1"
+description = "OpenAI-compatible HTTP server for the NeuroBrix local inference engine (independent, unofficial)."
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Vlad", email = "rusovladimir@gmail.com" }]
+keywords = ["openai", "api", "fastapi", "neurobrix", "local-inference"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "fastapi>=0.110",
+    "pydantic>=2.5,<3",
+    "uvicorn>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "httpx>=0.27",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+
+[project.urls]
+Homepage = "https://github.com/vladt2024/brixgate"
+Issues = "https://github.com/vladt2024/brixgate/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/brixgate"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src", "tests"]
+# scripts/ holds one-off probes (not part of the package); they are not linted or formatted.
+extend-exclude = ["scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-m 'not gpu'"
+markers = [
+    "gpu: tests that need a real NeuroBrix install and a GPU (run manually with: pytest -m gpu -o addopts='')",
+]
